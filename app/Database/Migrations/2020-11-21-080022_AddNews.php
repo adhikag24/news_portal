@@ -19,12 +19,19 @@ class AddNews extends Migration
 					'constraint'     => '100',
 			],
 			'news_content' => [
-				'type'           => 'VARCHAR',
-				'constraint'     => '100',
+				'type'           => 'TEXT',
 			],
 			'author_id' => [
 				'type'           => 'INT',
 				'constraint'     => 5,
+			],
+			'news_image' => [
+				'type'           => 'VARCHAR',
+				'constraint'     => '100',
+			],
+			'news_slug' => [
+				'type'           => 'VARCHAR',
+				'constraint'     => '100',
 			],
 			'date_created' => [
 				'type'           => 'timestamp'

@@ -15,6 +15,7 @@ namespace App\Controllers;
  */
 
 use CodeIgniter\Controller;
+use App\Models\M_news;
 
 class Admin extends Controller
 {
@@ -26,16 +27,67 @@ class Admin extends Controller
 	 *
 	 * @var array
 	 */
-	protected $helpers = [];
+	protected $helpers = ['form', 'url'];
 
 	/**
 	 * Constructor.
 	 */
+    public function __construct() {
+ 
+        $this->news = new M_news();
+    }
+ 
 	
     
     public function index()
     {
-        echo "test";
-    }
+		echo view('admin/template/header');
+		echo view('admin/dashboard');
+		echo view('admin/template/footer');
+	}
+	
+	public function news()
+	{
+		echo view('admin/template/header');
+		echo view('admin/news');
+		echo view('admin/template/footer');
+	}
 
+	public function create_news()
+	{
+		session();
+		$data = [
+			'validation' => \Config\Services::validation()
+		];
+		echo view('admin/template/header');
+		echo view('admin/insert_news', $data);
+		echo view('admin/template/footer');
+	}
+
+	public function insert_news()
+	{
+
+		$input = $this->validate([
+            'title' => 'required|trim',
+            'content' => 'required'
+        ]);
+
+ 
+        if (!$input) {
+			$validation = \Config\Services::validation();
+			return redirect()->to('/admin/create_news')->withInput()->with('validation',$validation);
+        } else {
+			$post = $this->request->getPost();
+
+			$data = [
+                'news_title' => $post['title'],
+                'news_content'  => $post['content'],
+				'news_slug'  => $post['slug'],
+			];          
+			
+			$this->news->insertNews($data);
+			session()->setFlashdata('pesan','');
+            return $this->response->redirect(site_url('/admin/news'));
+		}
+	}
 }
